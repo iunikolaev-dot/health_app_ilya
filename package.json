@@ -9,7 +9,9 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "setup": "npm install && cp env.local.example .env.local",
-    "push": "git push -u origin main"
+    "push": "git push -u origin main",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
   },
   "dependencies": {
     "next": "^14.0.0",
