@@ -111,7 +111,7 @@ export function generateAuthUrl(): string {
     client_id: process.env.WHOOP_CLIENT_ID!,
     redirect_uri: process.env.WHOOP_REDIRECT_URI!,
     scope: 'read:profile read:cycles',
-    state: Math.random().toString(36).substring(7),
+    state: Math.random().toString(36).substring(2, 10), // Generate 8 characters
   });
 
   return `https://api.prod.whoop.com/oauth/oauth2/auth?${params}`;
