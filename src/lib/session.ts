@@ -7,6 +7,7 @@ export interface SessionData {
   accessToken: string;
   refreshToken?: string;
   expiresAt: number;
+  [key: string]: unknown; // Add index signature for JWTPayload compatibility
 }
 
 export async function createSession(data: SessionData): Promise<string> {
