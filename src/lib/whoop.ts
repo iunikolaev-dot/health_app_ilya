@@ -105,12 +105,102 @@ export async function fetchWhoopCycles(
   return data.records || [];
 }
 
+export async function fetchWhoopRecovery(
+  session: SessionData,
+  start: string,
+  end: string
+): Promise<any[]> {
+  const params = new URLSearchParams({
+    start,
+    end,
+  });
+
+  const response = await fetch(`${WHOOP_BASE_URL}/recovery?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${session.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch recovery: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.records || [];
+}
+
+export async function fetchWhoopSleep(
+  session: SessionData,
+  start: string,
+  end: string
+): Promise<any[]> {
+  const params = new URLSearchParams({
+    start,
+    end,
+  });
+
+  const response = await fetch(`${WHOOP_BASE_URL}/activity/sleep?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${session.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch sleep: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.records || [];
+}
+
+export async function fetchWhoopWorkouts(
+  session: SessionData,
+  start: string,
+  end: string
+): Promise<any[]> {
+  const params = new URLSearchParams({
+    start,
+    end,
+  });
+
+  const response = await fetch(`${WHOOP_BASE_URL}/activity/workout?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${session.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch workouts: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.records || [];
+}
+
+export async function fetchWhoopBodyMeasurements(session: SessionData): Promise<any> {
+  const response = await fetch(`${WHOOP_BASE_URL}/user/measurement/body`, {
+    headers: {
+      'Authorization': `Bearer ${session.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch body measurements: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 export function generateAuthUrl(): string {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: process.env.WHOOP_CLIENT_ID!,
     redirect_uri: process.env.WHOOP_REDIRECT_URI!,
-    scope: 'read:profile read:cycles',
+    scope: 'read:profile read:cycles read:recovery read:sleep read:workout read:body_measurement',
     state: Math.random().toString(36).substring(2, 10), // Generate 8 characters
   });
 

@@ -69,6 +69,10 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [cyclesData, setCyclesData] = useState<CycleData[] | null>(null);
+  const [recoveryData, setRecoveryData] = useState<any[] | null>(null);
+  const [sleepData, setSleepData] = useState<any[] | null>(null);
+  const [workoutData, setWorkoutData] = useState<any[] | null>(null);
+  const [bodyData, setBodyData] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -132,6 +136,91 @@ export default function Home() {
     }
   };
 
+  const handleLoadRecovery = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const end = new Date().toISOString();
+      const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      
+      const response = await fetch(`/api/whoop/recovery?start=${start}&end=${end}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch recovery');
+      }
+      const data = await response.json();
+      setRecoveryData(data);
+    } catch (error) {
+      setError('Failed to load recovery');
+      console.error('Recovery fetch error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoadSleep = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const end = new Date().toISOString();
+      const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      
+      const response = await fetch(`/api/whoop/sleep?start=${start}&end=${end}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch sleep');
+      }
+      const data = await response.json();
+      setSleepData(data);
+    } catch (error) {
+      setError('Failed to load sleep');
+      console.error('Sleep fetch error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoadWorkouts = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const end = new Date().toISOString();
+      const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      
+      const response = await fetch(`/api/whoop/workout?start=${start}&end=${end}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch workouts');
+      }
+      const data = await response.json();
+      setWorkoutData(data);
+    } catch (error) {
+      setError('Failed to load workouts');
+      console.error('Workouts fetch error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoadBody = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch('/api/whoop/body');
+      if (!response.ok) {
+        throw new Error('Failed to fetch body measurements');
+      }
+      const data = await response.json();
+      setBodyData(data);
+    } catch (error) {
+      setError('Failed to load body measurements');
+      console.error('Body measurements fetch error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -161,20 +250,48 @@ export default function Home() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   WHOOP Data
                 </h2>
-                <div className="flex space-x-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <button
                     onClick={handleLoadProfile}
                     disabled={loading}
                     className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
                   >
-                    {loading ? 'Loading...' : 'Load Profile'}
+                    {loading ? 'Loading...' : 'Profile'}
                   </button>
                   <button
                     onClick={handleLoadCycles}
                     disabled={loading}
                     className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
                   >
-                    {loading ? 'Loading...' : 'Load Cycles'}
+                    {loading ? 'Loading...' : 'Cycles'}
+                  </button>
+                  <button
+                    onClick={handleLoadRecovery}
+                    disabled={loading}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {loading ? 'Loading...' : 'Recovery'}
+                  </button>
+                  <button
+                    onClick={handleLoadSleep}
+                    disabled={loading}
+                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {loading ? 'Loading...' : 'Sleep'}
+                  </button>
+                  <button
+                    onClick={handleLoadWorkouts}
+                    disabled={loading}
+                    className="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {loading ? 'Loading...' : 'Workouts'}
+                  </button>
+                  <button
+                    onClick={handleLoadBody}
+                    disabled={loading}
+                    className="bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {loading ? 'Loading...' : 'Body'}
                   </button>
                 </div>
               </div>
@@ -203,6 +320,50 @@ export default function Home() {
                   </h3>
                   <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-96">
                     {JSON.stringify(cyclesData, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              {recoveryData && (
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Recovery Data (Last 7 Days)
+                  </h3>
+                  <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-96">
+                    {JSON.stringify(recoveryData, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              {sleepData && (
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Sleep Data (Last 7 Days)
+                  </h3>
+                  <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-96">
+                    {JSON.stringify(sleepData, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              {workoutData && (
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Workout Data (Last 7 Days)
+                  </h3>
+                  <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-96">
+                    {JSON.stringify(workoutData, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              {bodyData && (
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Body Measurements
+                  </h3>
+                  <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-96">
+                    {JSON.stringify(bodyData, null, 2)}
                   </pre>
                 </div>
               )}
