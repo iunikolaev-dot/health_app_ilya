@@ -24,3 +24,7 @@ echo ""
 echo "🔗 GitHub Repository: https://github.com/iunikolaev-dot/health_app_ilya.git"
 echo ""
 echo "📖 See README.md for detailed setup instructions"
+
+
+
+

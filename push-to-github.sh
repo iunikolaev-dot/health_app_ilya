@@ -74,3 +74,7 @@ echo "💡 Quick setup commands:"
 echo "  npm install                    # Install dependencies"
 echo "  cp env.local.example .env.local # Copy environment template"
 echo "  npm run dev                    # Start development server"
+
+
+
+

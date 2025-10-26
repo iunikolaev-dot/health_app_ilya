@@ -59,3 +59,7 @@ echo "1. npm install"
 echo "2. cp env.local.example .env.local"
 echo "3. Edit .env.local with your WHOOP credentials"
 echo "4. npm run dev"
+
+
+
+
