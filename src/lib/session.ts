@@ -11,10 +11,14 @@ export interface SessionData {
 }
 
 export async function createSession(data: SessionData): Promise<string> {
-  const token = await new SignJWT(data)
+  // Store only access token to keep cookie small (no refresh token in cookie)
+  const token = await new SignJWT({
+    accessToken: data.accessToken,
+    expiresAt: data.expiresAt,
+  })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('24h')
+    .setExpirationTime('90d') // 90 дней
     .sign(secret);
 
   return token;
@@ -43,7 +47,7 @@ export async function setSessionCookie(token: string): Promise<void> {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 90 * 24 * 60 * 60, // 90 дней
     path: '/',
   });
 }
